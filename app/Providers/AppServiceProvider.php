@@ -26,5 +26,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define("create-article", function (User $user) {
             return $user->is_admin;
         });
+
+        Gate::define("delete-article", function (User $user) {
+            return $user->is_admin;
+        });
     }
 }

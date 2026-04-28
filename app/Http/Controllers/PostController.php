@@ -20,10 +20,12 @@ class PostController extends Controller
         return $query->get();
     }
 
-    public function show($slug)
+    public function show($id)
     {
+        $post = Post::where('id', $id)->firstOrFail();
         return response()->json([
-            'message' => "Details of post with slug: $slug",
+            'message' => "Details of post with slug: $id",
+            'post' => $post,
         ]);
     }
     public function store(Request $request) 
@@ -54,5 +56,9 @@ class PostController extends Controller
     {   }
 
     public function destroy($id) 
-    {   }
+    {  
+        Gate::authorize('delete-article');
+        $post = Post::find( $id )->delete();
+        return response()->noContent();
+    }
 }
