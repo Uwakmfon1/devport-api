@@ -14,11 +14,11 @@ Route::get('/', function () {
 });
 
 
-Route::apiResource('/posts', PostController::class);
+Route::middleware('auth:sanctum')->apiResource('/posts', PostController::class);
 Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/tags', TagController::class);
 
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);                
-Route::delete('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');    
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');    

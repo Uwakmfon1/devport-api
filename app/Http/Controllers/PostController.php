@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -27,12 +28,14 @@ class PostController extends Controller
     }
     public function store(Request $request) 
     { 
-        $request->validate([
+         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:255',
             'slug'=>'required|string|unique:posts,slug',
             'content' => 'required|string',
         ]);
+
+        Gate::authorize('create-article');    
 
         $post = Post::create([ 
             'title' => $request->input('title'),
