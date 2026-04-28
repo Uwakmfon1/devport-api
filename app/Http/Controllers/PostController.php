@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -53,7 +54,28 @@ class PostController extends Controller
       }
 
     public function update(Request $request, $id) 
-    {   }
+    {  
+        $post = Post::findOrFail($id);
+        Gate::authorize('update-article');
+
+    $validated = $request->validate([
+        'category_id' => ['sometimes', 'exists:categories,id'],
+        'title' => ['sometimes', 'string', 'max:255'],
+        'slug' => [
+            'sometimes',
+            'string',
+            Rule::unique('posts', 'slug')->ignore($post->id),
+        ],
+        'content' => ['sometimes', 'string'],
+    ]);
+
+    $post->update($validated);
+
+    return response()->json([
+        'message' => 'Post updated successfully',
+        'data' => $post,
+    ], 200);
+     }
 
     public function destroy($id) 
     {  
