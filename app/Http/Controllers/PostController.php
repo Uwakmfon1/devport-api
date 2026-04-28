@@ -58,7 +58,11 @@ class PostController extends Controller
     public function destroy($id) 
     {  
         Gate::authorize('delete-article');
-        $post = Post::find( $id )->delete();
-        return response()->noContent();
+        $post = Post::findOrFail( $id );
+        $post->delete();
+
+        return response()->json([
+            'message' => 'Post deleted successfully',
+        ],200);
     }
 }
